@@ -3,14 +3,24 @@
 
 @theme {
   --font-sans: "Prompt", system-ui, sans-serif;
-  --color-page: #01080e;
+
+  --color-page: #00090e;
   --color-surface: #171d1f;
   --color-accent: #81fe88;
   --color-field: #888888;
   --color-offwhite: #e1e1e1;
   --color-ink: #132e35;
-  --color-muted: #bcbcbc;
-  --color-decoration: #081317;
+
+  --text-title: 1.9375rem;
+  --text-title--line-height: 1.5;
+  --text-lead: 1.375rem;
+  --text-lead--line-height: 1.5;
+  --text-paragraph: 1.125rem;
+  --text-paragraph--line-height: 1.5;
+  --text-small: 0.9375rem;
+  --text-small--line-height: 1.5;
+  --text-label: 0.78125rem;
+  --text-label--line-height: 1.5;
 }
 
 body {

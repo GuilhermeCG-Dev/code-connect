@@ -4,17 +4,14 @@ type ChainDecorationProps = {
 
 export function ChainDecoration({ className = '' }: ChainDecorationProps) {
   return (
-    <svg
+    <img
       data-testid="chain-decoration"
-      viewBox="0 0 240 360"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="44"
+      src="/simbolo.svg"
+      alt=""
       aria-hidden="true"
-      className={`text-decoration ${className}`}
-    >
-      <rect x="22" y="22" width="130" height="190" rx="65" />
-      <rect x="88" y="148" width="130" height="190" rx="65" />
-    </svg>
+      width={407}
+      height={486}
+      className={className}
+    />
   )
 }

@@ -28,37 +28,40 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <Heading>Login</Heading>
-      <p className="mb-6 text-xl text-offwhite">Boas-vindas! Faça seu login.</p>
-      <FormField
-        label="Email ou usuário"
-        type="text"
-        placeholder="usuario123"
-        value={identifier}
-        onChange={(event) => setIdentifier(event.target.value)}
-      />
-      <FormField
-        label="Senha"
-        type="password"
-        placeholder="******"
-        value={password}
-        onChange={(event) => setPassword(event.target.value)}
-      />
-      <div className="flex items-center justify-between">
-        <Checkbox
-          label="Lembrar-me"
-          checked={remember}
-          onChange={(event) => setRemember(event.target.checked)}
-        />
-        <TextLink href="/esqueci-a-senha">Esqueci a senha</TextLink>
+    <form onSubmit={handleSubmit} className="mx-auto flex w-full max-w-79.5 flex-col gap-8">
+      <div className="flex flex-col gap-10">
+        <div className="flex flex-col gap-6">
+          <Heading>Login</Heading>
+          <p className="text-lead text-offwhite">Boas-vindas! Faça seu login.</p>
+        </div>
+        <div className="flex flex-col gap-4">
+          <FormField
+            label="Email ou usuário"
+            type="text"
+            placeholder="usuario123"
+            value={identifier}
+            onChange={(event) => setIdentifier(event.target.value)}
+          />
+          <div className="flex flex-col gap-2">
+            <FormField
+              label="Senha"
+              type="password"
+              placeholder="******"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+            />
+            <div className="flex items-center justify-between">
+              <Checkbox
+                label="Lembrar-me"
+                checked={remember}
+                onChange={(event) => setRemember(event.target.checked)}
+              />
+              <TextLink href="/esqueci-a-senha">Esqueci a senha</TextLink>
+            </div>
+          </div>
+        </div>
       </div>
-      <Button
-        type="submit"
-        fullWidth
-        icon={<Icon name="arrow-forward" />}
-        className="mt-2"
-      >
+      <Button type="submit" fullWidth icon={<Icon name="arrow-forward" className="size-4.5" />}>
         Login
       </Button>
     </form>
