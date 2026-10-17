@@ -22,7 +22,7 @@ export function SocialLogin({
   onSelect,
 }: SocialLoginProps) {
   return (
-    <section className="flex flex-col items-center gap-3">
+    <section className="flex flex-col items-center gap-2">
       <Divider>ou entre com outras contas</Divider>
       <div className="flex gap-6">
         {providers.map((provider) => (

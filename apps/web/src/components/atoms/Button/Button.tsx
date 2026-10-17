@@ -22,7 +22,7 @@ export function Button({
   return (
     <button
       type={type}
-      className={`flex cursor-pointer items-center justify-center gap-2 rounded-lg px-6 py-3.5 font-semibold transition ${variants[variant]} ${fullWidth ? 'w-full' : ''} ${className}`}
+      className={`flex cursor-pointer items-center justify-center gap-2 rounded-lg px-4 py-3 text-paragraph font-semibold transition ${variants[variant]} ${fullWidth ? 'w-full' : ''} ${className}`}
       {...props}
     >
       {children}

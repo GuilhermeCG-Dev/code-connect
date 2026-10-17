@@ -4,10 +4,10 @@ type DividerProps = {
 
 export function Divider({ children }: DividerProps) {
   return (
-    <div className="flex items-center gap-4 text-sm text-offwhite">
-      <span aria-hidden="true" className="h-px flex-1 bg-muted/60" />
+    <div className="flex w-full items-center gap-4 text-small text-offwhite">
+      <span aria-hidden="true" className="h-px flex-1 bg-offwhite" />
       <span>{children}</span>
-      <span aria-hidden="true" className="h-px flex-1 bg-muted/60" />
+      <span aria-hidden="true" className="h-px flex-1 bg-offwhite" />
     </div>
   )
 }
