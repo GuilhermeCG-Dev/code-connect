@@ -8,5 +8,7 @@ describe('Icon', () => {
     expect(container.querySelector('svg[aria-hidden="true"]')).toHaveAttribute('data-icon', 'arrow-forward')
     rerender(<Icon name="assignment" />)
     expect(container.querySelector('svg')).toHaveAttribute('data-icon', 'assignment')
+    rerender(<Icon name="login" />)
+    expect(container.querySelector('svg')).toHaveAttribute('data-icon', 'login')
   })
 })
