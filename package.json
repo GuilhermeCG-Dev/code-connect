@@ -1,0 +1,23 @@
+{
+  "name": "code-connect",
+  "private": true,
+  "scripts": {
+    "web": "pnpm --filter web",
+    "api": "pnpm --filter api",
+    "dev": "pnpm --parallel -r --filter web --filter api run dev",
+    "dev:web": "pnpm --filter web dev",
+    "dev:api": "pnpm --filter api start:dev",
+    "build": "pnpm -r run build",
+    "build:web": "pnpm --filter web build",
+    "build:api": "pnpm --filter api build",
+    "lint": "pnpm -r run lint",
+    "test:api": "pnpm --filter api test",
+    "test": "pnpm -r run test",
+    "test:web": "pnpm --filter web test",
+    "lint:commit": "commitlint --last --verbose"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^21.2.3",
+    "@commitlint/config-conventional": "^21.2.3"
+  }
+}
