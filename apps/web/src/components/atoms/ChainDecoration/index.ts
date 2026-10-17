@@ -1,0 +1,1 @@
+export { ChainDecoration } from './ChainDecoration'
