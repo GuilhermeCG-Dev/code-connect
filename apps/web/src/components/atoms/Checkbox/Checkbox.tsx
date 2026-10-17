@@ -27,7 +27,7 @@ export function Checkbox({ label, id, ...props }: CheckboxProps) {
           className="pointer-events-none absolute top-1 left-1 hidden peer-checked:block"
         />
       </span>
-      <label htmlFor={inputId} className="cursor-pointer text-small text-field">
+      <label htmlFor={inputId} className="cursor-pointer text-base text-field">
         {label}
       </label>
     </div>

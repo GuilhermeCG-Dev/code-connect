@@ -14,7 +14,7 @@ export function SignupPage() {
     <AuthTemplate
       bannerSrc="/banner-cadastro-desktop.png"
       bannerAlt="Mulher programando em um notebook diante de telas holográficas, com a logo CodeConnect"
-      bannerHeightClass="h-168.75"
+      bannerHeightClass="h-168"
       footer={
         <AuthFooterLink
           question="Já tem conta?"

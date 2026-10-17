@@ -11,13 +11,13 @@ type AuthFooterLinkProps = {
 }
 
 const layouts = {
-  stacked: 'flex-col text-small',
-  inline: 'flex-row text-paragraph',
+  stacked: 'flex-col text-base',
+  inline: 'flex-row text-lg',
 }
 
 const iconSizes: Record<IconName, string> = {
   'arrow-forward': 'size-6',
-  assignment: 'h-5.25 w-4.5',
+  assignment: 'size-5',
   login: 'size-6',
 }
 

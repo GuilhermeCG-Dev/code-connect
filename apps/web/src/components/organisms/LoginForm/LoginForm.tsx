@@ -28,11 +28,11 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mx-auto flex w-full max-w-79.5 flex-col gap-8">
+    <form onSubmit={handleSubmit} className="mx-auto flex w-full max-w-80 flex-col gap-8">
       <div className="flex flex-col gap-10">
         <div className="flex flex-col gap-6">
           <Heading>Login</Heading>
-          <p className="text-lead text-offwhite">Boas-vindas! Faça seu login.</p>
+          <p className="text-xl text-offwhite">Boas-vindas! Faça seu login.</p>
         </div>
         <div className="flex flex-col gap-4">
           <FormField
@@ -61,7 +61,7 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
           </div>
         </div>
       </div>
-      <Button type="submit" fullWidth icon={<Icon name="arrow-forward" className="size-4.5" />}>
+      <Button type="submit" fullWidth icon={<Icon name="arrow-forward" className="size-5" />}>
         Login
       </Button>
     </form>

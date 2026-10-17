@@ -15,7 +15,7 @@ export function SocialButton({
   return (
     <button
       type={type}
-      className={`flex cursor-pointer flex-col items-center gap-1 text-label text-offwhite hover:opacity-80 ${className}`}
+      className={`flex cursor-pointer flex-col items-center gap-1 text-xs text-offwhite hover:opacity-80 ${className}`}
       {...props}
     >
       <img src={iconSrc} alt="" />

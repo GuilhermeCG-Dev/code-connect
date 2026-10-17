@@ -32,7 +32,7 @@ export function SignupForm({ onSubmit }: SignupFormProps) {
     <form onSubmit={handleSubmit} className="flex w-full flex-col gap-8">
       <div className="flex flex-col gap-6">
         <Heading>Cadastro</Heading>
-        <p className="text-lead text-offwhite">Olá! Preencha seus dados.</p>
+        <p className="text-xl text-offwhite">Olá! Preencha seus dados.</p>
       </div>
       <div className="flex flex-col gap-4">
         <FormField
@@ -67,7 +67,7 @@ export function SignupForm({ onSubmit }: SignupFormProps) {
           />
         </div>
       </div>
-      <Button type="submit" fullWidth icon={<Icon name="arrow-forward" className="size-4.5" />}>
+      <Button type="submit" fullWidth icon={<Icon name="arrow-forward" className="size-5" />}>
         Cadastrar
       </Button>
     </form>

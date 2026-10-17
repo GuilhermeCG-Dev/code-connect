@@ -5,8 +5,8 @@ type TextLinkProps = ComponentProps<'a'> & {
 }
 
 const variants = {
-  underline: 'text-small text-offwhite underline',
-  accent: 'text-paragraph text-accent hover:underline',
+  underline: 'text-base text-offwhite underline',
+  accent: 'text-lg text-accent hover:underline',
 }
 
 export function TextLink({

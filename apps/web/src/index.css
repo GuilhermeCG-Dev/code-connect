@@ -10,17 +10,6 @@
   --color-field: #888888;
   --color-offwhite: #e1e1e1;
   --color-ink: #132e35;
-
-  --text-title: 1.9375rem;
-  --text-title--line-height: 1.5;
-  --text-lead: 1.375rem;
-  --text-lead--line-height: 1.5;
-  --text-paragraph: 1.125rem;
-  --text-paragraph--line-height: 1.5;
-  --text-small: 0.9375rem;
-  --text-small--line-height: 1.5;
-  --text-label: 0.78125rem;
-  --text-label--line-height: 1.5;
 }
 
 body {
