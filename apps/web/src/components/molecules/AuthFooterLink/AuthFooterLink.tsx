@@ -15,7 +15,7 @@ const layouts = {
   inline: 'flex-row text-lg',
 }
 
-const iconSizes: Record<IconName, string> = {
+const iconSizes: Partial<Record<IconName, string>> = {
   'arrow-forward': 'size-6',
   assignment: 'size-5',
   login: 'size-6',
@@ -33,7 +33,7 @@ export function AuthFooterLink({
       <p>{question}</p>
       <TextLink variant="accent" href={href} className="flex items-center gap-3">
         {linkText}
-        <Icon name={icon} className={iconSizes[icon]} />
+        <Icon name={icon} className={iconSizes[icon] ?? 'size-6'} />
       </TextLink>
     </div>
   )

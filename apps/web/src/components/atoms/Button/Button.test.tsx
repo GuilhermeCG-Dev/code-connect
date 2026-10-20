@@ -15,4 +15,13 @@ describe('Button', () => {
     render(<Button icon={<span data-testid="icon" />}>Login</Button>)
     expect(screen.getByTestId('icon')).toBeInTheDocument()
   })
+
+  it('renders the outline variant as a disabled button', () => {
+    render(
+      <Button variant="outline" disabled>
+        Publicar
+      </Button>,
+    )
+    expect(screen.getByRole('button', { name: 'Publicar' })).toBeDisabled()
+  })
 })
