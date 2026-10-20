@@ -137,3 +137,14 @@ Manual em `http://localhost:5173`:
 - `feat(web): add feed and post detail pages`
 - `feat(web): add new post page`
 - `docs(root): document feed, seed and uploads`
+
+## Implementado diferente
+- **Figma:** o MCP continuou recusando o link (fileKey com 20 caracteres). A UI foi feita a partir dos assets em `images/` (logo, ícones, imagens dos cards, placeholder) e do padrão visual do `AuthTemplate`. Falta comparar com o frame do Figma.
+- **Migration 0001:** `array_to_string` não é `IMMUTABLE`, então coluna gerada não pode chamar essa função direto. A migration cria `immutable_array_to_string(text[], text)` antes da tabela `posts`.
+- **Comentários** ficaram em um módulo próprio (`CommentsModule`, `posts/:postId/comments`), seguindo "um módulo por recurso". Likes ficaram no `PostsModule`.
+- **Upload:** o arquivo fica em memória durante a validação (`FileTypeValidator` confere os magic numbers) e só vai para o disco depois, então upload inválido não deixa arquivo órfão.
+- **react-router 8.4.0** (não v7). A `latest` é a `8.5.0`, mas ela foi publicada em 2026-10-19, o mesmo dia da instalação. A `8.4.0` foi publicada em 2026-09-15 via GitHub Actions (trusted publisher, com provenance). Integrity: `sha512-JtydAkBvU9UTEe5qNC+POhu+ZBNM7rlKY2IegwXc7Idj7xfRG16x5RZrw3mju+XlqBxfvb2ky9P3jUp9WyWC1g==`. Dependências: `cookie-es ^3.1.1` e `@remix-run/route-pattern ^0.22.1`.
+- **Menu lateral:** só tem Feed, Publicar (logado) e Login/Sair. Perfil e Sobre nós ficaram de fora porque essas páginas não existem.
+- **Ícone `thumb-up-outline`:** usa o path do Material `thumb_up_off_alt`, porque o SVG do pacote desenha o contorno com `mask`.
+- **Sessão expirada:** quando a API responde `401` a um token salvo, o interceptor do axios apaga o token, avisa o `AuthProvider` e repete o GET sem token. Assim o feed continua aparecendo depois que o JWT (1h) expira.
+- **Seed:** todos os usuários usam a senha `123456789`.

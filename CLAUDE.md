@@ -42,6 +42,7 @@ pnpm api exec nest g resource users       # Nest CLI generators
 pnpm api db:generate --name <name>        # SQL migration from src/database/schema.ts changes
 pnpm api db:migrate                       # apply migrations to DATABASE_URL
 pnpm api db:studio                        # Drizzle Studio
+pnpm api db:seed                          # replace posts/likes/comments with mock data
 pnpm web test src/components/atoms/Button # single web test file or folder
 pnpm web test:watch                       # web tests in watch mode
 ```
@@ -53,7 +54,12 @@ pnpm web test:watch                       # web tests in watch mode
 - **API tests use Vitest, not Jest.** `globals: true` and `vite-tsconfig-paths` are set. Unit tests are `*.spec.ts` next to the source. E2E tests are `test/*.e2e-spec.ts` with supertest. Unit tests use an in-memory PGlite database with the real migrations (`src/test/create-test-database.ts`), so they need no Docker. E2E tests need `pnpm db:up`: they migrate and use `codeconnect_test` (`DATABASE_URL_TEST`) and clear tables in `beforeEach`.
 - **Linting uses oxlint, not ESLint**, in both apps (`apps/web/.oxlintrc.json`, `apps/api/oxlint.json`). The API also has Prettier (`pnpm api format`).
 - **Web TS is strict on unused code** (`noUnusedLocals`, `noUnusedParameters`, `verbatimModuleSyntax`, `erasableSyntaxOnly`). Use `import type` for type-only imports. Do not use enums or parameter properties. `pnpm build:web` runs `tsc -b` before `vite build`, so type errors break the build.
-- The web app has no dev proxy to the API, and the API has no CORS setup. Configure one of them before the web app calls the API.
+- **Full text search.** `posts.search_vector` is a generated `tsvector` (`portuguese` config, weights title > tags > body) with a GIN index. It calls `immutable_array_to_string`, a SQL function created by migration `0001`, because `array_to_string` is not `IMMUTABLE`. `GET /posts?q=` uses `websearch_to_tsquery`.
+- **Uploads.** Post thumbnails are saved to `apps/api/uploads/` (`UPLOADS_DIR`, gitignored) and served under `/uploads` by `main.ts`. Responses return `thumbnailUrl` as `/uploads/<file>` or `null`. E2E tests write to a temp folder.
+- **Auth guards.** `AuthGuard` requires a Bearer token. `OptionalAuthGuard` lets anonymous requests through (for `likedByMe` on public reads) but rejects an invalid token with `401`.
+- **Seed.** `pnpm api db:seed` builds the API and runs `dist/database/seed.js`: 6 users (`<firstname>@codeconnect.dev`, password `123456789`), 40 posts, likes and comments. It replaces all posts, likes and comments, and copies card images from `images/` into `uploads/`. About 25% of the posts have no thumbnail.
+- **Web routing and session.** `react-router` (declarative mode). `/` feed, `/posts/:id` detail, `/posts/new` (logged in only) share the `AppLayout` page (sidebar + search bar). `/login` and `/cadastro` use `AuthTemplate`. `AuthProvider` (`src/contexts/AuthContext.tsx`) restores the session from the stored token; only pages call `useAuth()`. When the API rejects a stored token, `services/api.ts` clears it, fires a session-expired event and retries GET requests anonymously.
+- The Vite dev server proxies `/api` to `http://localhost:3000` (prefix removed), so the API needs no CORS setup. Upload URLs from the API are prefixed with `assetUrl()` in `services/posts.ts`.
 - Each app has its own `.gitignore`. The root `.gitignore` covers root-level `node_modules` and `.env` files. Only the root has a git repository.
 
 ## Frontend conventions (`apps/web`)
