@@ -15,9 +15,11 @@ export type SignupValues = {
 
 type SignupFormProps = {
   onSubmit: (values: SignupValues) => void
+  isSubmitting?: boolean
+  error?: string
 }
 
-export function SignupForm({ onSubmit }: SignupFormProps) {
+export function SignupForm({ onSubmit, isSubmitting = false, error }: SignupFormProps) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -40,6 +42,8 @@ export function SignupForm({ onSubmit }: SignupFormProps) {
           type="text"
           autoComplete="name"
           placeholder="Nome completo"
+          required
+          maxLength={100}
           value={name}
           onChange={(event) => setName(event.target.value)}
         />
@@ -48,6 +52,7 @@ export function SignupForm({ onSubmit }: SignupFormProps) {
           type="email"
           autoComplete="email"
           placeholder="Digite seu email"
+          required
           value={email}
           onChange={(event) => setEmail(event.target.value)}
         />
@@ -57,6 +62,8 @@ export function SignupForm({ onSubmit }: SignupFormProps) {
             type="password"
             autoComplete="new-password"
             placeholder="******"
+            required
+            minLength={8}
             value={password}
             onChange={(event) => setPassword(event.target.value)}
           />
@@ -67,8 +74,18 @@ export function SignupForm({ onSubmit }: SignupFormProps) {
           />
         </div>
       </div>
-      <Button type="submit" fullWidth icon={<Icon name="arrow-forward" className="size-5" />}>
-        Cadastrar
+      {error && (
+        <p role="alert" className="text-base text-danger">
+          {error}
+        </p>
+      )}
+      <Button
+        type="submit"
+        fullWidth
+        disabled={isSubmitting}
+        icon={<Icon name="arrow-forward" className="size-5" />}
+      >
+        {isSubmitting ? 'Cadastrando...' : 'Cadastrar'}
       </Button>
     </form>
   )

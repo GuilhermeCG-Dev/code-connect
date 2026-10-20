@@ -10,14 +10,14 @@ describe('SignupForm', () => {
 
     await userEvent.type(screen.getByLabelText('Nome'), 'Bia Souza')
     await userEvent.type(screen.getByLabelText('Email'), 'bia@email.com')
-    await userEvent.type(screen.getByLabelText('Senha'), 'segredo')
+    await userEvent.type(screen.getByLabelText('Senha'), 'segredo123')
     await userEvent.click(screen.getByRole('checkbox', { name: 'Lembrar-me' }))
     await userEvent.click(screen.getByRole('button', { name: 'Cadastrar' }))
 
     expect(onSubmit).toHaveBeenCalledWith({
       name: 'Bia Souza',
       email: 'bia@email.com',
-      password: 'segredo',
+      password: 'segredo123',
       remember: true,
     })
   })
@@ -26,5 +26,15 @@ describe('SignupForm', () => {
     render(<SignupForm onSubmit={vi.fn()} />)
     expect(screen.getByRole('heading', { name: 'Cadastro' })).toBeInTheDocument()
     expect(screen.getByText('Olá! Preencha seus dados.')).toBeInTheDocument()
+  })
+
+  it('disables the button while submitting', () => {
+    render(<SignupForm onSubmit={vi.fn()} isSubmitting />)
+    expect(screen.getByRole('button', { name: 'Cadastrando...' })).toBeDisabled()
+  })
+
+  it('shows the error message', () => {
+    render(<SignupForm onSubmit={vi.fn()} error="Este email já está cadastrado." />)
+    expect(screen.getByRole('alert')).toHaveTextContent('Este email já está cadastrado.')
   })
 })

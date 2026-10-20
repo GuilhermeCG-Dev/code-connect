@@ -8,23 +8,25 @@ import { TextLink } from '../../atoms/TextLink'
 import { FormField } from '../../molecules/FormField'
 
 export type LoginValues = {
-  identifier: string
+  email: string
   password: string
   remember: boolean
 }
 
 type LoginFormProps = {
   onSubmit: (values: LoginValues) => void
+  isSubmitting?: boolean
+  error?: string
 }
 
-export function LoginForm({ onSubmit }: LoginFormProps) {
-  const [identifier, setIdentifier] = useState('')
+export function LoginForm({ onSubmit, isSubmitting = false, error }: LoginFormProps) {
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [remember, setRemember] = useState(false)
 
   function handleSubmit(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault()
-    onSubmit({ identifier, password, remember })
+    onSubmit({ email, password, remember })
   }
 
   return (
@@ -36,17 +38,21 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
         </div>
         <div className="flex flex-col gap-4">
           <FormField
-            label="Email ou usuário"
-            type="text"
-            placeholder="usuario123"
-            value={identifier}
-            onChange={(event) => setIdentifier(event.target.value)}
+            label="Email"
+            type="email"
+            autoComplete="email"
+            placeholder="Digite seu email"
+            required
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
           />
           <div className="flex flex-col gap-2">
             <FormField
               label="Senha"
               type="password"
+              autoComplete="current-password"
               placeholder="******"
+              required
               value={password}
               onChange={(event) => setPassword(event.target.value)}
             />
@@ -61,8 +67,18 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
           </div>
         </div>
       </div>
-      <Button type="submit" fullWidth icon={<Icon name="arrow-forward" className="size-5" />}>
-        Login
+      {error && (
+        <p role="alert" className="text-base text-danger">
+          {error}
+        </p>
+      )}
+      <Button
+        type="submit"
+        fullWidth
+        disabled={isSubmitting}
+        icon={<Icon name="arrow-forward" className="size-5" />}
+      >
+        {isSubmitting ? 'Entrando...' : 'Login'}
       </Button>
     </form>
   )
