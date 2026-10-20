@@ -1,5 +1,6 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { createTestDatabase } from '../test/create-test-database.js';
 import { UsersService } from '../users/users.service.js';
 import { AuthService } from './auth.service.js';
 
@@ -9,7 +10,7 @@ describe('AuthService', () => {
   let authService: AuthService;
 
   beforeEach(async () => {
-    usersService = new UsersService();
+    usersService = new UsersService(await createTestDatabase());
     authService = new AuthService(usersService, jwtService);
     await usersService.create({
       name: 'Ana',
@@ -25,9 +26,8 @@ describe('AuthService', () => {
     );
 
     const payload = await jwtService.verifyAsync<{ sub: string }>(accessToken);
-    expect(payload.sub).toBe(
-      usersService.findByEmail('ana@codeconnect.dev')?.id,
-    );
+    const user = await usersService.findByEmail('ana@codeconnect.dev');
+    expect(payload.sub).toBe(user?.id);
   });
 
   it('should throw UnauthorizedException for a wrong password', async () => {

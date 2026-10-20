@@ -3,6 +3,9 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module.js';
+import { DATABASE } from './../src/database/database.constants.js';
+import type { Database } from './../src/database/database.types.js';
+import { users } from './../src/database/schema.js';
 
 describe('Auth (e2e)', () => {
   let app: INestApplication<App>;
@@ -27,6 +30,8 @@ describe('Auth (e2e)', () => {
       }),
     );
     await app.init();
+
+    await app.get<Database>(DATABASE).delete(users);
   });
 
   afterEach(async () => {

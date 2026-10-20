@@ -48,8 +48,10 @@ export class AuthController {
   @ApiOkResponse({ type: UserResponseDto })
   @ApiUnauthorizedResponse({ description: 'Missing or invalid token' })
   @ApiNotFoundResponse({ description: 'User no longer exists' })
-  getProfile(@Request() req: AuthenticatedRequest): UserResponseDto {
-    const user = this.usersService.findById(req.user.sub);
+  async getProfile(
+    @Request() req: AuthenticatedRequest,
+  ): Promise<UserResponseDto> {
+    const user = await this.usersService.findById(req.user.sub);
     if (!user) {
       throw new NotFoundException('User not found');
     }
