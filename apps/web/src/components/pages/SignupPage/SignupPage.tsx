@@ -1,8 +1,8 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router'
+import { useAuth } from '../../../contexts/AuthContext'
 import { getErrorStatus } from '../../../services/api'
 import { login, signup } from '../../../services/auth'
-import type { User } from '../../../services/auth'
-import { saveToken } from '../../../services/token'
 import { AuthFooterLink } from '../../molecules/AuthFooterLink'
 import { SignupForm } from '../../organisms/SignupForm'
 import type { SignupValues } from '../../organisms/SignupForm'
@@ -18,18 +18,18 @@ const fallbackError = 'Não foi possível conectar ao servidor. Tente novamente.
 export function SignupPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string>()
-  const [user, setUser] = useState<User>()
+  const { signIn } = useAuth()
+  const navigate = useNavigate()
 
   async function handleSignup({ name, email, password, remember }: SignupValues) {
     setIsSubmitting(true)
     setError(undefined)
     try {
-      const created = await signup({ name, email, password })
+      await signup({ name, email, password })
       // Sign in right away so the user does not type the credentials twice
       const { accessToken } = await login({ email, password })
-      saveToken(accessToken, remember)
-      // TODO: redirect to the feed once it exists
-      setUser(created)
+      await signIn(accessToken, remember)
+      navigate('/')
     } catch (err) {
       setError(errorMessages[getErrorStatus(err) ?? 0] ?? fallbackError)
     } finally {
@@ -46,17 +46,12 @@ export function SignupPage() {
         <AuthFooterLink
           question="Já tem conta?"
           linkText="Faça seu login!"
-          href="/"
+          href="/login"
           icon="login"
           layout="inline"
         />
       }
     >
-      {user && (
-        <p role="status" className="text-xl text-accent">
-          Olá, {user.name}! Cadastro realizado.
-        </p>
-      )}
       <SignupForm onSubmit={handleSignup} isSubmitting={isSubmitting} error={error} />
       <SocialLogin />
     </AuthTemplate>

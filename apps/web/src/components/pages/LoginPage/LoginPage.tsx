@@ -1,8 +1,8 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router'
+import { useAuth } from '../../../contexts/AuthContext'
 import { getErrorStatus } from '../../../services/api'
-import { getProfile, login } from '../../../services/auth'
-import type { User } from '../../../services/auth'
-import { saveToken } from '../../../services/token'
+import { login } from '../../../services/auth'
 import { AuthFooterLink } from '../../molecules/AuthFooterLink'
 import { LoginForm } from '../../organisms/LoginForm'
 import type { LoginValues } from '../../organisms/LoginForm'
@@ -18,16 +18,17 @@ const fallbackError = 'Não foi possível conectar ao servidor. Tente novamente.
 export function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string>()
-  const [user, setUser] = useState<User>()
+  const { signIn } = useAuth()
+  const navigate = useNavigate()
 
   async function handleLogin({ email, password, remember }: LoginValues) {
     setIsSubmitting(true)
     setError(undefined)
     try {
       const { accessToken } = await login({ email, password })
-      saveToken(accessToken, remember)
-      // TODO: redirect to the feed once it exists
-      setUser(await getProfile())
+      // Loading the profile proves the token works before leaving the page
+      await signIn(accessToken, remember)
+      navigate('/')
     } catch (err) {
       setError(errorMessages[getErrorStatus(err) ?? 0] ?? fallbackError)
     } finally {
@@ -47,11 +48,6 @@ export function LoginPage() {
         />
       }
     >
-      {user && (
-        <p role="status" className="text-xl text-accent">
-          Olá, {user.name}! Login realizado.
-        </p>
-      )}
       <LoginForm onSubmit={handleLogin} isSubmitting={isSubmitting} error={error} />
       <SocialLogin />
     </AuthTemplate>

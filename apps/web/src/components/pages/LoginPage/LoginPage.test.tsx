@@ -1,12 +1,27 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { AxiosError, AxiosHeaders } from 'axios'
+import { MemoryRouter, Route, Routes } from 'react-router'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { AuthProvider } from '../../../contexts/AuthContext'
 import { getProfile, login } from '../../../services/auth'
 import { getToken } from '../../../services/token'
 import { LoginPage } from './LoginPage'
 
 vi.mock('../../../services/auth')
+
+function renderPage() {
+  render(
+    <AuthProvider>
+      <MemoryRouter initialEntries={['/login']}>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/" element={<p>feed</p>} />
+        </Routes>
+      </MemoryRouter>
+    </AuthProvider>,
+  )
+}
 
 function httpError(status: number) {
   const config = { headers: new AxiosHeaders() }
@@ -33,7 +48,7 @@ describe('LoginPage', () => {
   })
 
   it('renders form, social login and signup link', () => {
-    render(<LoginPage />)
+    renderPage()
     expect(screen.getByRole('heading', { name: 'Login' })).toBeInTheDocument()
     expect(screen.getByLabelText('Email')).toBeInTheDocument()
     expect(screen.getByLabelText('Senha')).toBeInTheDocument()
@@ -43,7 +58,7 @@ describe('LoginPage', () => {
     expect(screen.getByRole('img', { name: /CodeConnect/ })).toBeInTheDocument()
   })
 
-  it('logs in, stores the token and greets the user', async () => {
+  it('logs in, stores the token and opens the feed', async () => {
     vi.mocked(login).mockResolvedValue({ accessToken: 'token-123' })
     vi.mocked(getProfile).mockResolvedValue({
       id: '1',
@@ -51,18 +66,19 @@ describe('LoginPage', () => {
       email: 'ana@codeconnect.dev',
       createdAt: '2026-10-19T12:00:00.000Z',
     })
-    render(<LoginPage />)
+    renderPage()
 
     await fillAndSubmit()
 
-    expect(await screen.findByRole('status')).toHaveTextContent('Olá, Ana Souza!')
+    expect(await screen.findByText('feed')).toBeInTheDocument()
+    expect(getProfile).toHaveBeenCalled()
     expect(login).toHaveBeenCalledWith({ email: 'ana@codeconnect.dev', password: 'supersecret' })
     expect(getToken()).toBe('token-123')
   })
 
   it('shows an error for invalid credentials', async () => {
     vi.mocked(login).mockRejectedValue(httpError(401))
-    render(<LoginPage />)
+    renderPage()
 
     await fillAndSubmit()
 
@@ -72,7 +88,7 @@ describe('LoginPage', () => {
 
   it('shows a connection error when the API is down', async () => {
     vi.mocked(login).mockRejectedValue(new Error('Network Error'))
-    render(<LoginPage />)
+    renderPage()
 
     await fillAndSubmit()
 
