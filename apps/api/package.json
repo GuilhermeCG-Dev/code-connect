@@ -23,7 +23,8 @@
     "dev": "nest start --watch",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "db:seed": "nest build && node dist/database/seed.js"
   },
   "dependencies": {
     "@nestjs/common": "^12.0.1",
