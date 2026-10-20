@@ -14,7 +14,9 @@
     "test:api": "pnpm --filter api test",
     "test": "pnpm -r run test",
     "test:web": "pnpm --filter web test",
-    "lint:commit": "commitlint --last --verbose"
+    "lint:commit": "commitlint --last --verbose",
+    "db:up": "docker compose up -d --wait",
+    "db:down": "docker compose down"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.3",
