@@ -5,7 +5,7 @@ import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module.js';
 import { DATABASE } from './../src/database/database.constants.js';
 import type { Database } from './../src/database/database.types.js';
-import { users } from './../src/database/schema.js';
+import { comments, likes, posts, users } from './../src/database/schema.js';
 
 describe('Auth (e2e)', () => {
   let app: INestApplication<App>;
@@ -31,7 +31,11 @@ describe('Auth (e2e)', () => {
     );
     await app.init();
 
-    await app.get<Database>(DATABASE).delete(users);
+    const db = app.get<Database>(DATABASE);
+    await db.delete(comments);
+    await db.delete(likes);
+    await db.delete(posts);
+    await db.delete(users);
   });
 
   afterEach(async () => {
