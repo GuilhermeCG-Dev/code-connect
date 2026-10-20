@@ -26,6 +26,8 @@ pnpm test               # tests in all apps
 pnpm test:web           # web component tests (vitest + jsdom)
 pnpm test:api           # api unit tests (vitest run)
 pnpm lint:commit        # check the last commit message with commitlint
+pnpm db:up              # start Postgres (docker-compose.yml) and wait until healthy
+pnpm db:down            # stop Postgres (data stays in the postgres-data volume)
 ```
 
 Any app script or pnpm command goes through the `web` / `api` passthrough shortcuts:
@@ -37,6 +39,9 @@ pnpm api test:e2e                         # e2e tests (vitest.config.e2e.ts, *.e
 pnpm api test src/app.controller.spec.ts  # single test file
 pnpm api test -t "should return"          # tests matching a name
 pnpm api exec nest g resource users       # Nest CLI generators
+pnpm api db:generate --name <name>        # SQL migration from src/database/schema.ts changes
+pnpm api db:migrate                       # apply migrations to DATABASE_URL
+pnpm api db:studio                        # Drizzle Studio
 pnpm web test src/components/atoms/Button # single web test file or folder
 pnpm web test:watch                       # web tests in watch mode
 ```
@@ -44,7 +49,8 @@ pnpm web test:watch                       # web tests in watch mode
 ## Architecture notes
 
 - **API is ESM** (`"type": "module"`, `module: nodenext`). Relative imports in `apps/api/src` must use the `.js` extension (e.g. `import { AppModule } from './app.module.js'`). `main.ts` uses top-level `await`.
-- **API tests use Vitest, not Jest.** `globals: true` and `vite-tsconfig-paths` are set. Unit tests are `*.spec.ts` next to the source. E2E tests are `test/*.e2e-spec.ts` with supertest.
+- **Database: PostgreSQL + Drizzle ORM.** `docker-compose.yml` at the root runs `postgres:17-alpine` with the named volume `postgres-data`. On first start, `docker/postgres/init/` creates the `codeconnect_test` database. Tables live in `apps/api/src/database/schema.ts`. Migrations are SQL files in `apps/api/drizzle/`, committed. Never edit an applied migration; generate a new one. `DatabaseModule` is global and provides the Drizzle instance under the `DATABASE` token (`@Inject(DATABASE) db: Database`). Connection string: `DATABASE_URL`, with a local fallback matching the compose file (see `.env.example`). Entity types come from the schema (`typeof users.$inferSelect`).
+- **API tests use Vitest, not Jest.** `globals: true` and `vite-tsconfig-paths` are set. Unit tests are `*.spec.ts` next to the source. E2E tests are `test/*.e2e-spec.ts` with supertest. Unit tests use an in-memory PGlite database with the real migrations (`src/test/create-test-database.ts`), so they need no Docker. E2E tests need `pnpm db:up`: they migrate and use `codeconnect_test` (`DATABASE_URL_TEST`) and clear tables in `beforeEach`.
 - **Linting uses oxlint, not ESLint**, in both apps (`apps/web/.oxlintrc.json`, `apps/api/oxlint.json`). The API also has Prettier (`pnpm api format`).
 - **Web TS is strict on unused code** (`noUnusedLocals`, `noUnusedParameters`, `verbatimModuleSyntax`, `erasableSyntaxOnly`). Use `import type` for type-only imports. Do not use enums or parameter properties. `pnpm build:web` runs `tsc -b` before `vite build`, so type errors break the build.
 - The web app has no dev proxy to the API, and the API has no CORS setup. Configure one of them before the web app calls the API.
