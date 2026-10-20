@@ -1,6 +1,7 @@
+import { AxiosError } from 'axios'
 import type { InternalAxiosRequestConfig } from 'axios'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { api } from './api'
+import { api, SESSION_EXPIRED_EVENT } from './api'
 import { getProfile, login } from './auth'
 import { clearToken, getToken, saveToken } from './token'
 
@@ -70,5 +71,38 @@ describe('auth service', () => {
     await getProfile()
 
     expect(adapter.mock.calls[0][0].headers.Authorization).toBe('Bearer abc')
+  })
+})
+
+describe('expired session', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    sessionStorage.clear()
+  })
+
+  it('drops the token and retries public reads anonymously', async () => {
+    saveToken('expired', true)
+    const onExpired = vi.fn()
+    window.addEventListener(SESSION_EXPIRED_EVENT, onExpired)
+    const adapter = vi.fn(async (config: InternalAxiosRequestConfig) => {
+      if (config.headers.Authorization) {
+        throw new AxiosError('Unauthorized', 'ERR_BAD_REQUEST', config, null, {
+          data: {},
+          status: 401,
+          statusText: 'Unauthorized',
+          headers: {},
+          config,
+        })
+      }
+      return { data: { items: [] }, status: 200, statusText: 'OK', headers: {}, config }
+    })
+    api.defaults.adapter = adapter
+
+    await expect(api.get('/posts')).resolves.toMatchObject({ data: { items: [] } })
+
+    expect(adapter).toHaveBeenCalledTimes(2)
+    expect(getToken()).toBeNull()
+    expect(onExpired).toHaveBeenCalledTimes(1)
+    window.removeEventListener(SESSION_EXPIRED_EVENT, onExpired)
   })
 })
